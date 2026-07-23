@@ -1,0 +1,27 @@
+name: Preview Create
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - labeled
+
+jobs:
+  preview:
+    if: contains(github.event.pull_request.labels.*.name, 'preview:create')
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+
+      - name: Verify swagger exists
+        run: |
+          if [ ! -f openapi.yaml ]; then
+            echo "openapi.yaml not found"
+            exit
+          fi
+          
+          echo "found openapi.yaml"
